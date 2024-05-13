@@ -1,3 +1,7 @@
+const dns = require("dns");
+
+dns.setDefaultResultOrder("ipv4first")
+
 const { withStoreConfig } = require("./store-config")
 const store = require("./store.config.json")
 

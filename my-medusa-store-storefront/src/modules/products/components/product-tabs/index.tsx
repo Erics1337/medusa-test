@@ -1,11 +1,9 @@
-"use client"
-
+// Combined imports
+import React, { useMemo } from "react"
 import { PricedProduct } from "@medusajs/medusa/dist/types/pricing"
-
 import Back from "@modules/common/icons/back"
 import FastDelivery from "@modules/common/icons/fast-delivery"
 import Refresh from "@modules/common/icons/refresh"
-
 import Accordion from "./accordion"
 
 type ProductTabsProps = {
@@ -13,23 +11,30 @@ type ProductTabsProps = {
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
-  const tabs = [
-    {
-      label: "Product Information",
-      component: <ProductInfoTab product={product} />,
-    },
-    {
-      label: "Shipping & Returns",
-      component: <ShippingInfoTab />,
-    },
-  ]
+  const tabs = useMemo(
+    () => [
+      {
+        label: "Product Information",
+        component: <ProductInfoTab product={product} />,
+      },
+      {
+        label: "Shipping & Returns",
+        component: <ShippingInfoTab />,
+      },
+      {
+        label: "E-book delivery",
+        component: <EbookDeliveryInfoTab />,
+      },
+    ],
+    [product]
+  )
 
   return (
     <div className="w-full">
       <Accordion type="multiple">
-        {tabs.map((tab, i) => (
+        {tabs.map((tab, index) => (
           <Accordion.Item
-            key={i}
+            key={index}
             title={tab.label}
             headingSize="medium"
             value={tab.label}
@@ -43,41 +48,27 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 }
 
 const ProductInfoTab = ({ product }: ProductTabsProps) => {
+  const metadata = useMemo(() => {
+    if (!product.metadata) return []
+    return Object.keys(product.metadata || {}).map((key) => {
+      return { key, value: product.metadata?.[key] }
+    })
+  }, [product])
+
   return (
     <div className="text-small-regular py-8">
       <div className="grid grid-cols-2 gap-x-8">
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <span className="font-semibold">Material</span>
-            <p>{product.material ? product.material : "-"}</p>
+        {metadata.slice(0, 4).map(({ key, value }, index) => (
+          <div key={index} className="flex flex-col gap-y-4">
+            <span className="font-semibold">{key}</span>
+            <p>{value || "-"}</p>
           </div>
-          <div>
-            <span className="font-semibold">Country of origin</span>
-            <p>{product.origin_country ? product.origin_country : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Type</span>
-            <p>{product.type ? product.type.value : "-"}</p>
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-4">
-          <div>
-            <span className="font-semibold">Weight</span>
-            <p>{product.weight ? `${product.weight} g` : "-"}</p>
-          </div>
-          <div>
-            <span className="font-semibold">Dimensions</span>
-            <p>
-              {product.length && product.width && product.height
-                ? `${product.length}L x ${product.width}W x ${product.height}H`
-                : "-"}
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
       {product.tags?.length ? (
         <div>
           <span className="font-semibold">Tags</span>
+          {/* Mapping tags */}
         </div>
       ) : null}
     </div>
@@ -116,6 +107,35 @@ const ShippingInfoTab = () => {
               Just return your product and we&apos;ll refund your money. No
               questions asked – we&apos;ll do our best to make sure your return
               is hassle-free.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const EbookDeliveryInfoTab = () => {
+  return (
+    <div className="text-small-regular py-8">
+      <div className="grid grid-cols-1 gap-y-8">
+        <div className="flex items-start gap-x-2">
+          <FastDelivery />
+          <div>
+            <span className="font-semibold">Instant delivery</span>
+            <p className="max-w-sm">
+              Your e-book will be delivered instantly via email. You can also
+              download it from your account anytime.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-start gap-x-2">
+          <Refresh />
+          <div>
+            <span className="font-semibold">Free previews</span>
+            <p className="max-w-sm">
+              Get a free preview of the e-book before you buy it. Just click the
+              button above to download it.
             </p>
           </div>
         </div>

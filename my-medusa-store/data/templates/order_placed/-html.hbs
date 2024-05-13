@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { width: 80%; margin: 20px auto; padding: 20px; border: 1px solid #ccc; }
+        .footer { margin-top: 20px; font-size: 0.9em; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Thank you for your order, {{customerName}}!</h1>
+        <p>We have successfully received your order <strong>#{{orderId}}</strong> and it is now being processed.</p>
+        <h3>Order Details:</h3>
+        <ul>
+            {{#each items}}
+            <li>{{quantity}}x {{name}} - ${{price}}</li>
+            {{/each}}
+        </ul>
+        <p>Total: <strong>${{total}}</strong></p>
+        <p>If you have any questions or need to make changes to your order, please contact us at <a href="mailto:support@{{storeEmail}}">support@{{storeEmail}}</a>.</p>
+        <div class="footer">
+            <p>Thank you for shopping with {{storeName}}!</p>
+        </div>
+    </div>
+</body>
+</html>
